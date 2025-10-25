@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://c9k7m3n8p2q5r"]
+
+[ext_resource type="Script" path="res://scripts/loot/WeaponPickup.gd" id="1_weapon"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_weapon"]
+size = Vector3(0.3, 0.1, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_weapon"]
+albedo_color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="WeaponPickup" type="StaticBody3D"]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_weapon")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_weapon")
+surface_material_override/0 = SubResource("StandardMaterial3D_weapon")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxMesh_weapon")
