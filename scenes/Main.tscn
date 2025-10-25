@@ -1,0 +1,120 @@
+[gd_scene load_steps=5 format=3 uid="uid://dqj72k8vwxn4h"]
+
+[ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://bkw5vwq7xk7oy" path="res://scenes/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://c1h7wqn2xk8pz" path="res://scenes/Goal.tscn" id="3_goal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(200, 20)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(100, 300)
+
+[node name="Goal" parent="." instance=ExtResource("3_goal")]
+position = Vector2(1100, 250)
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Platforms"]
+position = Vector2(640, 680)
+collision_layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Ground"]
+offset_left = -640.0
+offset_top = -20.0
+offset_right = 640.0
+offset_bottom = 20.0
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Ground"]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_platform")
+scale = Vector2(6.4, 1)
+
+[node name="Platform1" type="StaticBody2D" parent="Platforms"]
+position = Vector2(300, 550)
+collision_layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Platform1"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform1"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Platform2" type="StaticBody2D" parent="Platforms"]
+position = Vector2(550, 450)
+collision_layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Platform2"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform2"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Platform3" type="StaticBody2D" parent="Platforms"]
+position = Vector2(800, 350)
+collision_layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Platform3"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform3"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Platform4" type="StaticBody2D" parent="Platforms"]
+position = Vector2(1050, 350)
+collision_layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="Platforms/Platform4"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform4"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 500.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 24
+text = "WASD or Arrow Keys to move
+SPACE or W or UP to jump
+Reach the yellow goal!"
+
+[node name="WinLabel" type="Label" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -50.0
+offset_right = 200.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "YOU WIN!"
+horizontal_alignment = 1
+vertical_alignment = 1
