@@ -98,3 +98,12 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 18
 text = "[E] Pick up Item"
 horizontal_alignment = 1
+
+[node name="InventoryLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 80.0
+offset_right = 200.0
+offset_bottom = 103.0
+theme_override_font_sizes/font_size = 18
+text = "Inventory:"

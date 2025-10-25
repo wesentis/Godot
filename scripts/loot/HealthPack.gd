@@ -9,4 +9,5 @@ func _ready():
 func pickup(player):
 	if player.has_method("heal"):
 		player.heal(heal_amount)
+		print("Healed for ", heal_amount, " HP")
 		queue_free()

@@ -246,28 +246,28 @@ zombie_scene = ExtResource("2_zombie")
 [node name="Loot" type="Node3D" parent="."]
 
 [node name="WeaponPickup" parent="Loot" instance=ExtResource("6_weapon")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.5, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
 
 [node name="WeaponPickup2" parent="Loot" instance=ExtResource("6_weapon")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.5, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, 12)
 
 [node name="WeaponPickup3" parent="Loot" instance=ExtResource("6_weapon")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.5, 18)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
 
 [node name="HealthPack" parent="Loot" instance=ExtResource("7_health")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.5, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 8)
 
 [node name="HealthPack2" parent="Loot" instance=ExtResource("7_health")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.5, -22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -22)
 
 [node name="HealthPack3" parent="Loot" instance=ExtResource("7_health")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.5, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -15)
 
 [node name="HealthPack4" parent="Loot" instance=ExtResource("7_health")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.5, 9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 9)
 
 [node name="HealthPack5" parent="Loot" instance=ExtResource("7_health")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.5, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, -9)
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("3_game")

@@ -13,4 +13,7 @@ func pickup(player):
 		player.current_weapon = weapon_type
 		player.ammo += ammo_amount
 		player.max_ammo = ammo_amount
+		if player.has_method("update_weapon_visibility"):
+			player.update_weapon_visibility()
+		print("Picked up weapon: ", weapon_type, " with ", ammo_amount, " ammo")
 		queue_free()

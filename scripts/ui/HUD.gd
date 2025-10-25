@@ -6,6 +6,7 @@ extends Control
 @onready var weapon_label = $WeaponLabel
 @onready var crosshair = $Crosshair
 @onready var interaction_label = $InteractionLabel
+@onready var inventory_label = $InventoryLabel
 
 var player = null
 
@@ -29,6 +30,12 @@ func update_hud():
 	else:
 		ammo_label.text = "Ammo: --"
 		weapon_label.text = "Weapon: None"
+
+	# Update inventory
+	if player.inventory.size() > 0:
+		inventory_label.text = "Inventory: " + ", ".join(player.inventory)
+	else:
+		inventory_label.text = "Inventory: Empty"
 
 func check_interaction():
 	if player.raycast.is_colliding():

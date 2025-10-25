@@ -26,11 +26,13 @@ var max_ammo = 30
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var raycast = $Head/Camera3D/InteractRayCast
+@onready var weapon_model = $Head/Camera3D/WeaponHolder/WeaponModel
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	update_weapon_visibility()
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -136,6 +138,11 @@ func heal(amount):
 
 func add_to_inventory(item_name):
 	inventory.append(item_name)
+	print("Added to inventory: ", item_name)
+
+func update_weapon_visibility():
+	if weapon_model:
+		weapon_model.visible = (current_weapon != null)
 
 func die():
 	is_alive = false
