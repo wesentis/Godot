@@ -40,7 +40,7 @@ func update_hud():
 func check_interaction():
 	if player.raycast.is_colliding():
 		var collider = player.raycast.get_collider()
-		if collider.has_method("pickup"):
+		if collider != null and collider.has_method("pickup"):
 			interaction_label.text = "[E] Pick up %s" % collider.item_name
 			interaction_label.show()
 		else:

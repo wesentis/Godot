@@ -103,7 +103,7 @@ func _physics_process(delta):
 func interact():
 	if raycast.is_colliding():
 		var collider = raycast.get_collider()
-		if collider.has_method("pickup"):
+		if collider != null and collider.has_method("pickup"):
 			collider.pickup(self)
 
 func shoot():
@@ -117,7 +117,7 @@ func shoot():
 		query.collision_mask = 4 # Zombie layer
 
 		var result = space_state.intersect_ray(query)
-		if result:
+		if result and result.has("collider") and result.collider != null:
 			if result.collider.has_method("take_damage"):
 				result.collider.take_damage(25)
 
