@@ -3,13 +3,16 @@
 [ext_resource type="Script" path="res://scripts/loot/HealthPack.gd" id="1_health"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_health"]
-size = Vector3(0.4, 0.4, 0.2)
+size = Vector3(0.8, 0.8, 0.4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_health"]
-size = Vector3(0.4, 0.4, 0.2)
+size = Vector3(0.8, 0.8, 0.4)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_health"]
 albedo_color = Color(1, 0.2, 0.2, 1)
+emission_enabled = true
+emission = Color(1, 0.1, 0.1, 1)
+emission_energy_multiplier = 0.5
 
 [node name="HealthPack" type="StaticBody3D"]
 collision_layer = 16
@@ -17,10 +20,10 @@ collision_mask = 0
 script = ExtResource("1_health")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("BoxMesh_health")
 surface_material_override/0 = SubResource("StandardMaterial3D_health")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_health")
