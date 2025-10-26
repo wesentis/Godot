@@ -88,13 +88,22 @@ func update_visual():
 		item_icon.color = Color(0.5, 0.5, 0.6, 1)
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
-	if typeof(data) == TYPE_DICTIONARY and data.has("item"):
-		var can_equip = can_equip_item(data.item)
-		if can_equip:
-			print("Can equip ", data.item.name, " to ", slot_label.text)
-		else:
-			print("Cannot equip ", data.item.name, " to ", slot_label.text)
-		return can_equip
+	print("=== _can_drop_data CALLED ===")
+	print("Data type: ", typeof(data))
+
+	if typeof(data) == TYPE_DICTIONARY:
+		print("Data keys: ", data.keys())
+		if data.has("item"):
+			print("Item name: ", data.item.name)
+			print("Item type: ", data.item.type)
+			var can_equip = can_equip_item(data.item)
+			if can_equip:
+				print("✅ CAN EQUIP ", data.item.name, " to ", slot_label.text)
+			else:
+				print("❌ CANNOT EQUIP ", data.item.name, " to ", slot_label.text)
+			return can_equip
+
+	print("❌ Invalid data format")
 	return false
 
 func _drop_data(at_position: Vector2, data: Variant):
@@ -145,6 +154,9 @@ func _drop_data(at_position: Vector2, data: Variant):
 			var inv = get_parent_inventory()
 			if inv:
 				inv.update_inventory_display()
+				print("Inventory display updated")
+			else:
+				print("WARNING: Could not find inventory to update")
 			print("=== EQUIPPING COMPLETE ===")
 
 func get_slot_index() -> int:
@@ -159,10 +171,17 @@ func get_slot_index() -> int:
 			return -1
 
 func get_parent_inventory():
-	# Navigate to Inventory control
-	var inventory = get_node_or_null("../../../../../..")
-	if inventory and inventory.has_method("update_inventory_display"):
-		return inventory
+	# Get CharacterPanel first
+	var char_panel = get_parent().get_parent()
+	if char_panel and char_panel.has("inventory_ref"):
+		if char_panel.inventory_ref:
+			print("✅ Inventory found via CharacterPanel.inventory_ref")
+			return char_panel.inventory_ref
+		else:
+			print("❌ CharacterPanel.inventory_ref is null")
+	else:
+		print("❌ Could not find CharacterPanel or inventory_ref")
+
 	return null
 
 func _get_drag_data(at_position: Vector2) -> Variant:

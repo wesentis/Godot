@@ -8,6 +8,7 @@ extends Panel
 @onready var boots_slot = $MarginContainer/VBoxContainer/BootsSlot
 
 var player = null
+var inventory_ref = null
 
 func _ready():
 	# Connect equipment slot signals
@@ -18,6 +19,13 @@ func _ready():
 	weapon_slot_1.item_unequipped.connect(_on_weapon_unequipped.bind(0))
 	weapon_slot_2.item_unequipped.connect(_on_weapon_unequipped.bind(1))
 	weapon_slot_3.item_unequipped.connect(_on_weapon_unequipped.bind(2))
+
+	# Get inventory reference
+	inventory_ref = get_node_or_null("../../..")
+	if inventory_ref:
+		print("CharacterPanel: Inventory reference found")
+	else:
+		print("CharacterPanel: WARNING - Could not find inventory")
 
 func set_player(p):
 	player = p
