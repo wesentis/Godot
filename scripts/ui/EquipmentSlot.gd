@@ -217,10 +217,20 @@ func remove_item():
 	clear_slot()
 
 func get_player():
-	# Navigate up to CharacterPanel then to get player reference
-	var char_panel = get_parent().get_parent()
-	if char_panel and char_panel.has_method("set_player"):
-		return char_panel.player
+	# Navigate up to CharacterPanel
+	# EquipmentSlot → VBoxContainer → MarginContainer → CharacterPanel
+	var current = get_parent()
+	while current != null:
+		if current.has_method("set_player") and current.has("player"):
+			if current.player:
+				print("✅ Found player via ", current.name)
+				return current.player
+			else:
+				print("⚠️ Found CharacterPanel but player is null")
+				return null
+		current = current.get_parent()
+
+	print("❌ Could not find CharacterPanel with player!")
 	return null
 
 func receive_item(item: Dictionary):
