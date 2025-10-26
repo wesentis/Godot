@@ -104,21 +104,36 @@ func _drop_data(at_position: Vector2, data: Variant):
 			print("=== EQUIPPING ITEM ===")
 			print("Item: ", item.name, " to slot: ", slot_label.text)
 
+			# Get player reference
+			var player = get_player()
+			if not player:
+				print("ERROR: Could not get player reference!")
+				return
+
 			# If slot already has an item, return it to inventory
 			if has_item:
 				var old_item = unequip_item()
 				print("Slot already had item: ", old_item.name)
-				var player = get_player()
-				if player:
-					player.add_to_inventory(old_item.name, old_item.type, old_item.data)
-					print("Returned old item to inventory")
+				player.add_to_inventory(old_item.name, old_item.type, old_item.data)
+				print("Returned old item to inventory")
 
+			# Update visual in slot FIRST
 			equip_item(item)
+
+			# Update player's equipped weapons array
+			var slot_index = get_slot_index()
+			if slot_index >= 0 and item.type == "weapon" and item.has("data"):
+				var weapon_data = item.data as WeaponData
+				player.equipped_weapons[slot_index] = weapon_data
+				print("Updated player.equipped_weapons[", slot_index, "] = ", weapon_data.weapon_name)
+
+				# Switch to this weapon (this will update the visual model)
+				player.switch_weapon(slot_index)
+				print("Switched to weapon slot ", slot_index)
 
 			# If item came from inventory, remove it from player inventory
 			if data.has("item_index") and data.item_index >= 0:
-				var player = get_player()
-				if player and data.item_index < player.inventory.size():
+				if data.item_index < player.inventory.size():
 					player.inventory.remove_at(data.item_index)
 					print("Removed item from inventory index ", data.item_index)
 
@@ -127,8 +142,21 @@ func _drop_data(at_position: Vector2, data: Variant):
 				data.source_slot.remove_item()
 
 			# Update inventory display
-			get_parent_inventory().update_inventory_display()
+			var inv = get_parent_inventory()
+			if inv:
+				inv.update_inventory_display()
 			print("=== EQUIPPING COMPLETE ===")
+
+func get_slot_index() -> int:
+	match slot_type:
+		SlotType.WEAPON_1:
+			return 0
+		SlotType.WEAPON_2:
+			return 1
+		SlotType.WEAPON_3:
+			return 2
+		_:
+			return -1
 
 func get_parent_inventory():
 	# Navigate to Inventory control

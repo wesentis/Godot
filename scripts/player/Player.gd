@@ -28,14 +28,16 @@ var last_shot_time = 0.0
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var raycast = $Head/Camera3D/InteractRayCast
-@onready var weapon_model = $Head/Camera3D/WeaponHolder/WeaponModel
+@onready var weapon_holder = $Head/Camera3D/WeaponHolder/WeaponModel
+@onready var weapon_body = $Head/Camera3D/WeaponHolder/WeaponModel/Body
+@onready var weapon_barrel = $Head/Camera3D/WeaponHolder/WeaponModel/Barrel
 @onready var muzzle_flash = $Head/Camera3D/WeaponHolder/WeaponModel/Barrel/MuzzleFlash
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	update_weapon_visibility()
+	update_weapon_model()
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -254,24 +256,40 @@ func switch_weapon(slot_index: int):
 	print("Switched to weapon slot ", slot_index + 1, ": ", current_weapon_data.weapon_name)
 
 func update_weapon_model():
-	if not weapon_model:
+	if not weapon_holder or not weapon_body or not weapon_barrel:
+		print("ERROR: Weapon model parts not found!")
 		return
 
 	if current_weapon_data:
-		weapon_model.visible = true
+		print("=== UPDATING WEAPON MODEL ===")
+		print("Weapon: ", current_weapon_data.weapon_name)
+		print("Model size: ", current_weapon_data.model_size)
+		print("Model color: ", current_weapon_data.model_color)
 
-		# Update weapon model appearance
-		var mesh_instance = weapon_model as MeshInstance3D
-		if mesh_instance and mesh_instance.mesh is BoxMesh:
-			var box_mesh = mesh_instance.mesh as BoxMesh
+		weapon_holder.visible = true
+
+		# Update weapon body mesh
+		if weapon_body.mesh is BoxMesh:
+			var box_mesh = weapon_body.mesh as BoxMesh
 			box_mesh.size = current_weapon_data.model_size
+			print("Updated body mesh size")
 
-			# Update material color
-			var material = mesh_instance.get_active_material(0) as StandardMaterial3D
-			if material:
-				material.albedo_color = current_weapon_data.model_color
+		# Update weapon body material
+		var body_material = weapon_body.get_active_material(0) as StandardMaterial3D
+		if body_material:
+			body_material.albedo_color = current_weapon_data.model_color
+			print("Updated body material color")
+
+		# Update barrel size (proportional to body)
+		if weapon_barrel.mesh is BoxMesh:
+			var barrel_mesh = weapon_barrel.mesh as BoxMesh
+			barrel_mesh.size = Vector3(0.1, 0.1, current_weapon_data.model_size.z * 0.3)
+			print("Updated barrel mesh size")
+
+		print("Weapon model visible and updated!")
 	else:
-		weapon_model.visible = false
+		weapon_holder.visible = false
+		print("No weapon equipped, hiding model")
 
 func drop_item(item_index: int):
 	if item_index < 0 or item_index >= inventory.size():
