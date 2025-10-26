@@ -89,18 +89,27 @@ func update_visual():
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	if typeof(data) == TYPE_DICTIONARY and data.has("item"):
-		return can_equip_item(data.item)
+		var can_equip = can_equip_item(data.item)
+		if can_equip:
+			print("Can equip ", data.item.name, " to ", slot_label.text)
+		else:
+			print("Cannot equip ", data.item.name, " to ", slot_label.text)
+		return can_equip
 	return false
 
 func _drop_data(at_position: Vector2, data: Variant):
 	if typeof(data) == TYPE_DICTIONARY and data.has("item"):
 		var item = data.item
 		if can_equip_item(item):
+			print("Equipping item ", item.name, " to slot ", slot_label.text)
+
 			# If slot already has an item, swap them
 			if has_item:
 				var old_item = unequip_item()
+				print("Swapping out old item: ", old_item.name)
 				if data.has("source_slot"):
 					data.source_slot.receive_item(old_item)
+
 			equip_item(item)
 
 			# Remove from source
@@ -120,11 +129,22 @@ func _get_drag_data(at_position: Vector2) -> Variant:
 
 	# Create preview
 	var preview = PanelContainer.new()
+	var vbox = VBoxContainer.new()
 	var label = Label.new()
 	label.text = icon_label.text
 	label.add_theme_font_size_override("font_size", 48)
-	preview.add_child(label)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(label)
+
+	var name_label = Label.new()
+	name_label.text = equipped_item.name
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(name_label)
+
+	preview.add_child(vbox)
 	set_drag_preview(preview)
+
+	print("Dragging from equipment slot: ", equipped_item.name)
 
 	return {
 		"item": equipped_item,
@@ -144,6 +164,9 @@ func get_player():
 	return null
 
 func receive_item(item: Dictionary):
-	# This is used when swapping from equipment slot
-	# For now we don't allow putting items back
-	pass
+	# This is used when swapping from equipment slot to equipment slot
+	print("Receiving item in equipment slot: ", item.name)
+	equipped_item = item
+	has_item = true
+	update_visual()
+	item_equipped.emit(slot_type, item)
