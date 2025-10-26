@@ -32,10 +32,25 @@ func update_inventory_display():
 		return
 
 	# Create slots for each item
-	for item in player.inventory:
+	for i in range(player.inventory.size()):
+		var item = player.inventory[i]
 		var slot = item_slot_scene.instantiate()
 		items_container.add_child(slot)
-		slot.set_item(item)
+		slot.set_item(item, i)
+
+		# Connect signals
+		slot.item_used.connect(_on_item_used)
+		slot.item_dropped.connect(_on_item_dropped)
+
+func _on_item_used(item_index: int):
+	if player and player.has_method("use_item"):
+		player.use_item(item_index)
+		update_inventory_display()
+
+func _on_item_dropped(item_index: int):
+	if player and player.has_method("drop_item"):
+		player.drop_item(item_index)
+		update_inventory_display()
 
 func set_player(p):
 	player = p

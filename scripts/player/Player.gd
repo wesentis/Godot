@@ -16,11 +16,13 @@ var is_alive = true
 var is_crouching = false
 var current_speed = WALK_SPEED
 
-# Inventory
+# Inventory - stores items as dictionaries {type, name, data}
 var inventory = []
-var current_weapon = null
+var equipped_weapons = [null, null, null]  # 3 weapon slots
+var current_weapon_slot = 0
+var current_weapon_data: WeaponData = null
 var ammo = 0
-var max_ammo = 30
+var last_shot_time = 0.0
 
 # References
 @onready var head = $Head
@@ -99,6 +101,14 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("reload"):
 		reload()
 
+	# Handle Weapon Switching
+	if Input.is_action_just_pressed("ui_text_1"):
+		switch_weapon(0)
+	elif Input.is_action_just_pressed("ui_text_2"):
+		switch_weapon(1)
+	elif Input.is_action_just_pressed("ui_text_3"):
+		switch_weapon(2)
+
 	move_and_slide()
 
 func interact():
@@ -108,27 +118,59 @@ func interact():
 			collider.pickup(self)
 
 func shoot():
-	if current_weapon and ammo > 0:
-		ammo -= 1
+	if not current_weapon_data or ammo <= 0:
+		return
 
-		# Muzzle flash effect
-		if muzzle_flash:
-			muzzle_flash.restart()
+	# Check fire rate
+	var current_time = Time.get_ticks_msec() / 1000.0
+	if current_time - last_shot_time < current_weapon_data.fire_rate:
+		return
 
-		# Create a raycast for shooting
-		var space_state = get_world_3d().direct_space_state
-		var from = camera.global_position
-		var to = from + (-camera.global_transform.basis.z * 100)
-		var query = PhysicsRayQueryParameters3D.create(from, to)
-		query.collision_mask = 4 # Zombie layer
+	last_shot_time = current_time
+	ammo -= 1
 
-		var result = space_state.intersect_ray(query)
-		if result and result.has("collider") and result.collider != null:
-			if result.collider.has_method("take_damage"):
-				result.collider.take_damage(25)
+	# Muzzle flash effect
+	if muzzle_flash:
+		muzzle_flash.restart()
+
+	# Check if weapon uses projectiles (rocket launcher)
+	if current_weapon_data.is_projectile:
+		shoot_projectile()
+	else:
+		shoot_raycast()
+
+func shoot_raycast():
+	# Create a raycast for shooting
+	var space_state = get_world_3d().direct_space_state
+	var from = camera.global_position
+	var to = from + (-camera.global_transform.basis.z * 100)
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	query.collision_mask = 4 # Zombie layer
+
+	var result = space_state.intersect_ray(query)
+	if result and result.has("collider") and result.collider != null:
+		if result.collider.has_method("take_damage"):
+			result.collider.take_damage(current_weapon_data.damage)
+
+func shoot_projectile():
+	# Spawn rocket projectile
+	var rocket_scene = load("res://scenes/projectiles/Rocket.tscn")
+	var rocket = rocket_scene.instantiate()
+	get_tree().root.add_child(rocket)
+
+	# Position at barrel
+	var barrel_position = muzzle_flash.global_position if muzzle_flash else camera.global_position
+	rocket.global_position = barrel_position
+
+	# Set direction and properties
+	rocket.direction = -camera.global_transform.basis.z
+	rocket.damage = current_weapon_data.damage
+	rocket.explosion_radius = current_weapon_data.explosion_radius
+	rocket.speed = current_weapon_data.projectile_speed
 
 func reload():
-	ammo = max_ammo
+	if current_weapon_data:
+		ammo = current_weapon_data.max_ammo
 
 func take_damage(damage):
 	if not is_alive:
@@ -142,13 +184,126 @@ func take_damage(damage):
 func heal(amount):
 	health = min(health + amount, max_health)
 
-func add_to_inventory(item_name):
-	inventory.append(item_name)
+func add_to_inventory(item_name, item_type = "generic", item_data = null):
+	var item = {
+		"name": item_name,
+		"type": item_type,  # "weapon", "health", "generic"
+		"data": item_data
+	}
+	inventory.append(item)
 	print("Added to inventory: ", item_name)
 
+func use_item(item_index: int):
+	if item_index < 0 or item_index >= inventory.size():
+		return
+
+	var item = inventory[item_index]
+
+	if item.type == "weapon":
+		equip_weapon_from_inventory(item_index)
+	elif item.type == "health":
+		use_health_item(item_index)
+
+func use_health_item(item_index: int):
+	if item_index < 0 or item_index >= inventory.size():
+		return
+
+	var item = inventory[item_index]
+	heal(50)  # Heal 50 HP
+	inventory.remove_at(item_index)
+	print("Used health pack")
+
+func equip_weapon_from_inventory(item_index: int):
+	if item_index < 0 or item_index >= inventory.size():
+		return
+
+	var item = inventory[item_index]
+	if item.type != "weapon":
+		return
+
+	# Find empty weapon slot
+	var slot_index = -1
+	for i in range(equipped_weapons.size()):
+		if equipped_weapons[i] == null:
+			slot_index = i
+			break
+
+	# If no empty slot, replace current weapon
+	if slot_index == -1:
+		slot_index = current_weapon_slot
+
+	equipped_weapons[slot_index] = item.data
+	switch_weapon(slot_index)
+
+	# Remove from inventory
+	inventory.remove_at(item_index)
+	print("Equipped weapon to slot ", slot_index + 1)
+
+func switch_weapon(slot_index: int):
+	if slot_index < 0 or slot_index >= equipped_weapons.size():
+		return
+
+	if equipped_weapons[slot_index] == null:
+		return
+
+	current_weapon_slot = slot_index
+	current_weapon_data = equipped_weapons[slot_index]
+	ammo = current_weapon_data.max_ammo
+	update_weapon_model()
+	print("Switched to weapon slot ", slot_index + 1, ": ", current_weapon_data.weapon_name)
+
+func update_weapon_model():
+	if not weapon_model:
+		return
+
+	if current_weapon_data:
+		weapon_model.visible = true
+
+		# Update weapon model appearance
+		var mesh_instance = weapon_model as MeshInstance3D
+		if mesh_instance and mesh_instance.mesh is BoxMesh:
+			var box_mesh = mesh_instance.mesh as BoxMesh
+			box_mesh.size = current_weapon_data.model_size
+
+			# Update material color
+			var material = mesh_instance.get_active_material(0) as StandardMaterial3D
+			if material:
+				material.albedo_color = current_weapon_data.model_color
+	else:
+		weapon_model.visible = false
+
+func drop_item(item_index: int):
+	if item_index < 0 or item_index >= inventory.size():
+		return
+
+	var item = inventory[item_index]
+
+	# Create the appropriate pickup item in the world
+	var pickup_scene = null
+	if item.type == "weapon":
+		pickup_scene = load("res://scenes/loot/WeaponPickup.tscn")
+	elif item.type == "health":
+		pickup_scene = load("res://scenes/loot/HealthPack.tscn")
+
+	if pickup_scene:
+		var pickup = pickup_scene.instantiate()
+		get_tree().root.add_child(pickup)
+
+		# Position in front of player
+		var drop_position = global_position + (-global_transform.basis.z * 2.0)
+		drop_position.y = global_position.y
+		pickup.global_position = drop_position
+
+		# Set weapon data if it's a weapon
+		if item.type == "weapon" and pickup.has_method("set_weapon_data"):
+			pickup.set_weapon_data(item.data)
+
+	# Remove from inventory
+	inventory.remove_at(item_index)
+	print("Dropped item: ", item.name)
+
 func update_weapon_visibility():
-	if weapon_model:
-		weapon_model.visible = (current_weapon != null)
+	update_weapon_model()
 
 func die():
 	is_alive = false

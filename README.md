@@ -19,12 +19,17 @@ H2Z2, Godot 4.5.1 ile geliştirilmiş 3D zombi hayatta kalma oyunudur. Day-Z tar
 
 ### Sistemler
 - **Sağlık Sistemi** (0-100 HP)
-- **Silah Sistemi** - Ateş etme ve yeniden yükleme
+- **Çoklu Silah Sistemi** - 3 farklı silah türü (Pistol, AR15, Rocket Launcher)
+- **Silah Değiştirme** - 1, 2, 3 tuşları ile 3 slot arası geçiş
 - **Muzzle Flash** - Particle effect ile ateş efekti
-- **Envanter Sistemi** - TAB/I ile açılır envanter UI
+- **Projectile Sistemi** - Rocket Launcher için fiziksel mermi ve patlama efekti
+- **Gelişmiş Envanter Sistemi** - TAB/I ile açılır envanter UI
+  - Toplanan itemler envanterinizde saklanır
+  - Sağ tık ile "Kullan" veya "At" menüsü
+  - Health pack'ler envanterde saklanır, sağ tıkla kullanılır
 - **Item Slot Sistemi** - Toplanan itemleri görsel olarak gösterir
 - **Etkileşim Sistemi** - Loot toplama
-- **HUD** - Sağlık, cephane, silah bilgisi, envanter listesi
+- **HUD** - Sağlık, cephane, silah bilgisi, equipped weapons, envanter sayısı
 - **Crosshair** - Nişan alma
 - **Zombi Spawn Sistemi** - Max 10 zombi aynı anda
 
@@ -42,24 +47,48 @@ H2Z2, Godot 4.5.1 ile geliştirilmiş 3D zombi hayatta kalma oyunudur. Day-Z tar
 ### Savaş
 - **Sol Fare Tuşu** - Ateş et
 - **R** - Silahı yeniden yükle
+- **1** - Silah slot 1'e geç
+- **2** - Silah slot 2'ye geç
+- **3** - Silah slot 3'e geç
 
 ### Etkileşim
 - **E** - Loot topla (silah, sağlık çantası)
 - **TAB veya I** - Envanter aç/kapat
+- **Sağ Tık (Envanterde)** - Item menüsünü aç (Kullan/At)
 - **Mouse** - Kamera hareketi
 - **ESC** - Fare imlecini serbest bırak/yakala
 
 ## Oyun Mekaniği
 
 ### Loot Türleri
-1. **Silah (Pistol)** - Gri kutu
-   - 30 mermi ile gelir
-   - Her atış 25 hasar verir
-   - R tuşu ile yeniden yükleme
 
-2. **Sağlık Çantası** - Kırmızı kutu
-   - 30 HP iyileştirir
+**Silahlar:**
+1. **Pistol** - Gri/Siyah kutu
+   - 12 mermi kapasite
+   - Her atış 25 hasar
+   - 0.5 saniye ateş hızı
+   - Raycast tabanlı (anlık isabet)
+
+2. **AR15** - Kahverengi kutu
+   - 30 mermi kapasite
+   - Her atış 35 hasar
+   - 0.15 saniye ateş hızı (hızlı)
+   - Raycast tabanlı (anlık isabet)
+
+3. **Rocket Launcher** - Yeşilimsi kutu
+   - 4 roket kapasite
+   - Her patlama 100 hasar
+   - 5 metre patlama yarıçapı
+   - 2.0 saniye ateş hızı (yavaş)
+   - Fiziksel projectile (30 m/s hızında roket)
+
+**Sağlık:**
+4. **Health Pack** - Kırmızı ışıklı kutu
+   - Envanterinize eklenir
+   - Sağ tık ile kullanıldığında 50 HP iyileştirir
    - Max 100 HP
+
+**Not:** Yerden aldığınız silahlar ve health pack'ler artık envanterinize eklenir!
 
 ### Zombiler
 - **50 HP** sağlık
@@ -191,9 +220,15 @@ Projeye eklenebilecek özellikler:
 - [x] Temel envanter sistemi (TAB ile açılır)
 - [x] Muzzle flash particle effect
 - [x] Item slot görsel sistemi
+- [x] Çoklu silah sistemi (Pistol, AR15, Rocket Launcher)
+- [x] Silah değiştirme sistemi (1, 2, 3 tuşları)
+- [x] Projectile sistemi (Rocket Launcher için)
+- [x] Sağ tık envanter menüsü (Kullan/At)
+- [x] Item drop sistemi
+- [x] Health pack envanter entegrasyonu
+- [x] Patlama efekti (Rocket Launcher için)
 
 **Yapılacaklar:**
-- [ ] Daha fazla silah türü (rifle, shotgun)
 - [ ] Farklı zombi türleri
 - [ ] Bina içi loot spawn
 - [ ] Ses efektlerini entegre et (asset linkler README'de)
@@ -209,10 +244,15 @@ Projeye eklenebilecek özellikler:
 
 1. **Zombilerden kaçın!** - Çok fazla zombi varsa koşarak uzaklaşın
 2. **Cephaneyi koru** - Her atış sayılır, boşa mermi harcamayın
-3. **Sağlık çantalarını topla** - Düşük HP ile oyun zorlaşır
+3. **Sağlık çantalarını topla** - Envanterinizde saklayın, gerektiğinde kullanın
 4. **Binalar arkasını kullan** - Zombilerden saklanmak için
 5. **İlk silahı hemen bul** - Silahsız zombi öldürmek imkansız
 6. **Spawn noktalarını öğren** - Loot her zaman aynı yerlerde
+7. **Silahları akıllıca seç** - Pistol yakın dövüş, AR15 orta mesafe, Rocket Launcher grup saldırısı için
+8. **Rocket'ı dikkatli kullan** - Sadece 4 roket var ve yavaş reload
+9. **1, 2, 3 tuşları ile silah değiştir** - Hızlı silah değişimi hayat kurtarır
+10. **Envanteri kontrol et (TAB)** - Health pack'lerinizi sağ tık ile kullanın
+11. **Gereksiz item'leri at** - Envanter doluysa sağ tık ile item'leri yere atın
 
 ## Lisans
 

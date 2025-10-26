@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://drocketprojectile"]
+
+[ext_resource type="Script" path="res://scripts/projectiles/Rocket.gd" id="1_rocket"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rocket"]
+radius = 0.1
+height = 0.5
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rocket"]
+radius = 0.1
+height = 0.5
+
+[node name="Rocket" type="RigidBody3D"]
+collision_layer = 0
+collision_mask = 6
+gravity_scale = 0.0
+script = ExtResource("1_rocket")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_rocket")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_rocket")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

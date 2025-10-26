@@ -24,18 +24,28 @@ func update_hud():
 	health_label.text = "HP: %d/%d" % [player.health, player.max_health]
 
 	# Update ammo
-	if player.current_weapon:
-		ammo_label.text = "Ammo: %d" % player.ammo
-		weapon_label.text = "Weapon: %s" % player.current_weapon
+	if player.current_weapon_data:
+		ammo_label.text = "Ammo: %d/%d" % [player.ammo, player.current_weapon_data.max_ammo]
+		weapon_label.text = "Weapon: %s (Slot %d)" % [player.current_weapon_data.weapon_name, player.current_weapon_slot + 1]
 	else:
 		ammo_label.text = "Ammo: --"
 		weapon_label.text = "Weapon: None"
 
-	# Update inventory
+	# Update equipped weapons display
+	var weapons_text = "Weapons: "
+	for i in range(player.equipped_weapons.size()):
+		var weapon = player.equipped_weapons[i]
+		if weapon:
+			var marker = " [%d]" % (i + 1)
+			if i == player.current_weapon_slot:
+				marker = " *%d*" % (i + 1)
+			weapons_text += weapon.weapon_name + marker + " "
+
+	# Update inventory count
 	if player.inventory.size() > 0:
-		inventory_label.text = "Inventory: " + ", ".join(player.inventory)
+		inventory_label.text = weapons_text + " | Items: %d (TAB)" % player.inventory.size()
 	else:
-		inventory_label.text = "Inventory: Empty"
+		inventory_label.text = weapons_text + " | Items: Empty"
 
 func check_interaction():
 	if player.raycast.is_colliding():
