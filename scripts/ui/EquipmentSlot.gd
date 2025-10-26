@@ -101,50 +101,63 @@ func _drop_data(at_position: Vector2, data: Variant):
 	if typeof(data) == TYPE_DICTIONARY and data.has("item"):
 		var item = data.item
 		if can_equip_item(item):
-			print("Equipping item ", item.name, " to slot ", slot_label.text)
+			print("=== EQUIPPING ITEM ===")
+			print("Item: ", item.name, " to slot: ", slot_label.text)
 
-			# If slot already has an item, swap them
+			# If slot already has an item, return it to inventory
 			if has_item:
 				var old_item = unequip_item()
-				print("Swapping out old item: ", old_item.name)
-				if data.has("source_slot"):
-					data.source_slot.receive_item(old_item)
+				print("Slot already had item: ", old_item.name)
+				var player = get_player()
+				if player:
+					player.add_to_inventory(old_item.name, old_item.type, old_item.data)
+					print("Returned old item to inventory")
 
 			equip_item(item)
 
-			# Remove from source
-			if data.has("source_slot"):
-				data.source_slot.remove_item()
-
-			# If item came from inventory (has item_index), remove it from player inventory
+			# If item came from inventory, remove it from player inventory
 			if data.has("item_index") and data.item_index >= 0:
 				var player = get_player()
-				if player and player.inventory.size() > data.item_index:
+				if player and data.item_index < player.inventory.size():
 					player.inventory.remove_at(data.item_index)
 					print("Removed item from inventory index ", data.item_index)
 
+			# Remove from source slot visual
+			if data.has("source_slot"):
+				data.source_slot.remove_item()
+
+			# Update inventory display
+			get_parent_inventory().update_inventory_display()
+			print("=== EQUIPPING COMPLETE ===")
+
+func get_parent_inventory():
+	# Navigate to Inventory control
+	var inventory = get_node_or_null("../../../../../..")
+	if inventory and inventory.has_method("update_inventory_display"):
+		return inventory
+	return null
+
 func _get_drag_data(at_position: Vector2) -> Variant:
 	if not has_item:
+		print("Cannot drag - no item equipped")
 		return null
 
-	# Create preview
-	var preview = PanelContainer.new()
-	var vbox = VBoxContainer.new()
+	print("=== DRAGGING FROM EQUIPMENT ===")
+	print("Item: ", equipped_item.name, " from slot: ", slot_label.text)
+
+	# Create simple preview
+	var preview = Panel.new()
+	preview.custom_minimum_size = Vector2(100, 100)
+
 	var label = Label.new()
 	label.text = icon_label.text
-	label.add_theme_font_size_override("font_size", 48)
+	label.add_theme_font_size_override("font_size", 64)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(label)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.size = Vector2(100, 100)
 
-	var name_label = Label.new()
-	name_label.text = equipped_item.name
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(name_label)
-
-	preview.add_child(vbox)
+	preview.add_child(label)
 	set_drag_preview(preview)
-
-	print("Dragging from equipment slot: ", equipped_item.name)
 
 	return {
 		"item": equipped_item,

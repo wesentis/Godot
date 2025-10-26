@@ -62,26 +62,25 @@ func _on_context_menu_choice(id: int):
 # Drag & Drop functionality
 func _get_drag_data(at_position: Vector2) -> Variant:
 	if item_data.is_empty():
+		print("Cannot drag - item_data is empty")
 		return null
 
-	# Create preview
-	var preview = PanelContainer.new()
-	var vbox = VBoxContainer.new()
+	print("=== STARTING DRAG ===")
+	print("Item: ", item_data.name, " (index: ", item_index, ")")
+
+	# Create simple preview
+	var preview = Panel.new()
+	preview.custom_minimum_size = Vector2(100, 100)
+
 	var label = Label.new()
 	label.text = icon_label.text
-	label.add_theme_font_size_override("font_size", 48)
+	label.add_theme_font_size_override("font_size", 64)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(label)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.size = Vector2(100, 100)
 
-	var name_label = Label.new()
-	name_label.text = item_data.name
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(name_label)
-
-	preview.add_child(vbox)
+	preview.add_child(label)
 	set_drag_preview(preview)
-
-	print("Dragging item: ", item_data.name)
 
 	return {
 		"item": item_data,
