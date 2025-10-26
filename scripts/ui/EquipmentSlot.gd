@@ -221,7 +221,7 @@ func get_player():
 	# EquipmentSlot → VBoxContainer → MarginContainer → CharacterPanel
 	var current = get_parent()
 	while current != null:
-		if current.has_method("set_player") and current.has("player"):
+		if current.has_method("set_player") and "player" in current:
 			if current.player:
 				print("✅ Found player via ", current.name)
 				return current.player
