@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dmj5k8n9p4q7r"]
+[gd_scene load_steps=17 format=3 uid="uid://dmj5k8n9p4q7r"]
 
 [ext_resource type="PackedScene" uid="uid://c5y8k1m9p8h2n" path="res://scenes/player/Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://b8k3n5m2x9p7q" path="res://scenes/zombie/Zombie.tscn" id="2_zombie"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/systems/ZombieSpawner.gd" id="5_spawner"]
 [ext_resource type="PackedScene" uid="uid://c9k7m3n8p2q5r" path="res://scenes/loot/WeaponPickup.tscn" id="6_weapon"]
 [ext_resource type="PackedScene" uid="uid://d5k8m4n9p3q6r" path="res://scenes/loot/HealthPack.tscn" id="7_health"]
+[ext_resource type="PackedScene" uid="uid://dmk8n7p5q9r3s" path="res://scenes/ui/Inventory.tscn" id="8_inventory"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -275,3 +276,5 @@ script = ExtResource("3_game")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="HUD" parent="UI" instance=ExtResource("4_hud")]
+
+[node name="Inventory" parent="UI" instance=ExtResource("8_inventory")]

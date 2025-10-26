@@ -27,6 +27,7 @@ var max_ammo = 30
 @onready var camera = $Head/Camera3D
 @onready var raycast = $Head/Camera3D/InteractRayCast
 @onready var weapon_model = $Head/Camera3D/WeaponHolder/WeaponModel
+@onready var muzzle_flash = $Head/Camera3D/WeaponHolder/WeaponModel/Barrel/MuzzleFlash
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -109,6 +110,11 @@ func interact():
 func shoot():
 	if current_weapon and ammo > 0:
 		ammo -= 1
+
+		# Muzzle flash effect
+		if muzzle_flash:
+			muzzle_flash.restart()
+
 		# Create a raycast for shooting
 		var space_state = get_world_3d().direct_space_state
 		var from = camera.global_position

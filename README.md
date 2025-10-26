@@ -20,8 +20,11 @@ H2Z2, Godot 4.5.1 ile geliştirilmiş 3D zombi hayatta kalma oyunudur. Day-Z tar
 ### Sistemler
 - **Sağlık Sistemi** (0-100 HP)
 - **Silah Sistemi** - Ateş etme ve yeniden yükleme
+- **Muzzle Flash** - Particle effect ile ateş efekti
+- **Envanter Sistemi** - TAB/I ile açılır envanter UI
+- **Item Slot Sistemi** - Toplanan itemleri görsel olarak gösterir
 - **Etkileşim Sistemi** - Loot toplama
-- **HUD** - Sağlık, cephane, silah bilgisi
+- **HUD** - Sağlık, cephane, silah bilgisi, envanter listesi
 - **Crosshair** - Nişan alma
 - **Zombi Spawn Sistemi** - Max 10 zombi aynı anda
 
@@ -42,6 +45,7 @@ H2Z2, Godot 4.5.1 ile geliştirilmiş 3D zombi hayatta kalma oyunudur. Day-Z tar
 
 ### Etkileşim
 - **E** - Loot topla (silah, sağlık çantası)
+- **TAB veya I** - Envanter aç/kapat
 - **Mouse** - Kamera hareketi
 - **ESC** - Fare imlecini serbest bırak/yakala
 
@@ -162,13 +166,38 @@ Bu proje aşağıdaki GitHub kaynaklarından esinlenilerek geliştirilmiştir:
 - **AI System**: LimboAI (Behavior Trees)
 - **Inventory**: expressobits/inventory-system
 
+### Ücretsiz Asset Kaynakları (CC0)
+Oyunu geliştirmek için kullanabileceğiniz ücretsiz asset'ler:
+
+**3D Modeller:**
+- **Kenney FPS Starter Kit**: https://github.com/KenneyNL/Starter-Kit-FPS (3D modeller, silahlar, CC0)
+- **GDQuest 3D Characters**: https://github.com/gdquest-demos/godot-4-3D-Characters (Karakter modelleri, Godot 4 uyumlu)
+- **itch.io Godot Assets**: https://itch.io/game-assets/free/tag-godot (Ücretsiz zombi ve karakter modelleri)
+- **Sketchfab**: https://sketchfab.com/tags/godot (CC0 ve CC-BY zombi modelleri)
+
+**Ses Efektleri:**
+- **Weapon Sound Library**: https://github.com/PanderMusubi/sound-effects-library-weapons (CC0 silah sesleri)
+- **Kenney FPS Kit**: https://github.com/KenneyNL/Starter-Kit-FPS (CC0 oyun sesleri)
+- **OpenGameArt Pistol Sounds**: https://opengameart.org/content/pistol-animations-sounds-for-godot (CC0 ateş sesleri)
+- **Freesound.org**: https://freesound.org (CC0 çeşitli ses efektleri)
+
+**Asset Kullanım Notu:**
+Asset'leri indirip `assets/models/` ve `assets/sounds/` klasörlerine yerleştirin ve Godot'ta import edin.
+
 ### Gelecek Geliştirmeler
 Projeye eklenebilecek özellikler:
+
+**Tamamlananlar:**
+- [x] Temel envanter sistemi (TAB ile açılır)
+- [x] Muzzle flash particle effect
+- [x] Item slot görsel sistemi
+
+**Yapılacaklar:**
 - [ ] Daha fazla silah türü (rifle, shotgun)
-- [ ] Envanter sistemi genişletme
 - [ ] Farklı zombi türleri
 - [ ] Bina içi loot spawn
-- [ ] Ses efektleri ve müzik
+- [ ] Ses efektlerini entegre et (asset linkler README'de)
+- [ ] 3D modelleri entegre et (asset linkler README'de)
 - [ ] Zombi ve silah animasyonları
 - [ ] Gece/gündüz döngüsü
 - [ ] Açlık ve susuzluk sistemi

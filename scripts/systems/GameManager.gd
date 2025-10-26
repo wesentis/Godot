@@ -2,6 +2,7 @@ extends Node
 
 @onready var player = $"../Player"
 @onready var hud = $"../UI/HUD"
+@onready var inventory = $"../UI/Inventory"
 @onready var zombie_spawner = $"../ZombieSpawner"
 
 func _ready():
@@ -11,6 +12,8 @@ func _ready():
 	# Connect systems
 	if hud:
 		hud.set_player(player)
+	if inventory:
+		inventory.set_player(player)
 	if zombie_spawner:
 		zombie_spawner.set_player(player)
 
