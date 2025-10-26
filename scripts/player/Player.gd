@@ -200,7 +200,8 @@ func use_item(item_index: int):
 	var item = inventory[item_index]
 
 	if item.type == "weapon":
-		equip_weapon_from_inventory(item_index)
+		print("Silahı kuşanmak için karakter panelindeki bir slota sürükleyin!")
+		# Weapons are now equipped via drag & drop to CharacterPanel
 	elif item.type == "health":
 		use_health_item(item_index)
 

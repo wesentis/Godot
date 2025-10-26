@@ -1,7 +1,8 @@
 extends Control
 
-@onready var items_container = $Panel/ItemsContainer
-@onready var close_button = $Panel/CloseButton
+@onready var items_container = $CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer/ScrollContainer/ItemsContainer
+@onready var close_button = $CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer/Header/CloseButton
+@onready var character_panel = $CenterContainer/HBoxContainer/CharacterPanel
 
 var player = null
 var item_slot_scene = preload("res://scenes/ui/ItemSlot.tscn")
@@ -19,6 +20,8 @@ func toggle_inventory():
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		get_tree().paused = true
 		update_inventory_display()
+		if character_panel:
+			character_panel.update_from_player()
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		get_tree().paused = false
@@ -46,14 +49,20 @@ func _on_item_used(item_index: int):
 	if player and player.has_method("use_item"):
 		player.use_item(item_index)
 		update_inventory_display()
+		if character_panel:
+			character_panel.update_from_player()
 
 func _on_item_dropped(item_index: int):
 	if player and player.has_method("drop_item"):
 		player.drop_item(item_index)
 		update_inventory_display()
+		if character_panel:
+			character_panel.update_from_player()
 
 func set_player(p):
 	player = p
+	if character_panel:
+		character_panel.set_player(p)
 
 func _on_close_button_pressed():
 	toggle_inventory()

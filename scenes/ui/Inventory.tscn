@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmk8n7p5q9r3s"]
+[gd_scene load_steps=3 format=3 uid="uid://dmk8n7p5q9r3s"]
 
 [ext_resource type="Script" path="res://scripts/ui/Inventory.gd" id="1_inventory"]
+[ext_resource type="PackedScene" uid="uid://characterpanel123" path="res://scenes/ui/CharacterPanel.tscn" id="2_charpanel"]
 
 [node name="Inventory" type="Control"]
 process_mode = 3
@@ -22,43 +23,65 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.8)
 
-[node name="Panel" type="Panel" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -400.0
-offset_top = -300.0
-offset_right = 400.0
-offset_bottom = 300.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="Panel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 300.0
-offset_bottom = 60.0
-theme_override_font_sizes/font_size = 32
-text = "INVENTORY (TAB to close)"
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="ItemsContainer" type="GridContainer" parent="Panel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 80.0
-offset_right = 780.0
-offset_bottom = 580.0
+[node name="CharacterPanel" parent="CenterContainer/HBoxContainer" instance=ExtResource("2_charpanel")]
+layout_mode = 2
+
+[node name="InventoryPanel" type="Panel" parent="CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(900, 600)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/HBoxContainer/InventoryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Envanter"
+
+[node name="CloseButton" type="Button" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+text = "Kapat (TAB)"
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemsContainer" type="GridContainer" parent="CenterContainer/HBoxContainer/InventoryPanel/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 5
-
-[node name="CloseButton" type="Button" parent="Panel"]
-layout_mode = 0
-offset_left = 700.0
-offset_top = 20.0
-offset_right = 780.0
-offset_bottom = 60.0
-text = "Close (TAB)"
