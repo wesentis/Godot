@@ -16,11 +16,15 @@ func _input(event):
 
 func toggle_inventory():
 	visible = !visible
+	print("🟢 Inventory toggled, visible: ", visible)
 	if visible:
+		print("   character_panel: ", character_panel)
+		print("   character_panel.player: ", character_panel.player if character_panel else "N/A")
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		get_tree().paused = true
 		update_inventory_display()
 		if character_panel:
+			print("   Calling character_panel.update_from_player()")
 			character_panel.update_from_player()
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -60,9 +64,15 @@ func _on_item_dropped(item_index: int):
 			character_panel.update_from_player()
 
 func set_player(p):
+	print("🟢 Inventory.set_player() called")
+	print("   Player: ", p)
+	print("   character_panel exists: ", character_panel != null)
 	player = p
 	if character_panel:
+		print("   Calling character_panel.set_player()")
 		character_panel.set_player(p)
+	else:
+		print("   ❌ ERROR: character_panel is null!")
 
 func _on_close_button_pressed():
 	toggle_inventory()

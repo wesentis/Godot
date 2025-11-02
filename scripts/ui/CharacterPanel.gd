@@ -11,6 +11,9 @@ var player = null
 var inventory_ref = null
 
 func _ready():
+	print("🔵 CharacterPanel._ready() called")
+	print("   player at _ready: ", player)
+
 	# Connect equipment slot signals
 	weapon_slot_1.item_equipped.connect(_on_weapon_equipped.bind(0))
 	weapon_slot_2.item_equipped.connect(_on_weapon_equipped.bind(1))
@@ -28,7 +31,10 @@ func _ready():
 		print("CharacterPanel: WARNING - Could not find inventory")
 
 func set_player(p):
+	print("🔵 CharacterPanel.set_player() called")
+	print("   New player: ", p)
 	player = p
+	print("   player property after set: ", player)
 	update_from_player()
 
 func update_from_player():
