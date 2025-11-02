@@ -113,7 +113,7 @@ func _drop_data(at_position: Vector2, data: Variant):
 			print("=== EQUIPPING ITEM ===")
 			print("Item: ", item.name, " to slot: ", slot_label.text)
 
-			# Get player reference
+			# Get player reference for inventory operations
 			var player = get_player()
 			if not player:
 				print("ERROR: Could not get player reference!")
@@ -126,20 +126,6 @@ func _drop_data(at_position: Vector2, data: Variant):
 				player.add_to_inventory(old_item.name, old_item.type, old_item.data)
 				print("Returned old item to inventory")
 
-			# Update visual in slot FIRST
-			equip_item(item)
-
-			# Update player's equipped weapons array
-			var slot_index = get_slot_index()
-			if slot_index >= 0 and item.type == "weapon" and item.has("data"):
-				var weapon_data = item.data as WeaponData
-				player.equipped_weapons[slot_index] = weapon_data
-				print("Updated player.equipped_weapons[", slot_index, "] = ", weapon_data.weapon_name)
-
-				# Switch to this weapon (this will update the visual model)
-				player.switch_weapon(slot_index)
-				print("Switched to weapon slot ", slot_index)
-
 			# If item came from inventory, remove it from player inventory
 			if data.has("item_index") and data.item_index >= 0:
 				if data.item_index < player.inventory.size():
@@ -149,6 +135,10 @@ func _drop_data(at_position: Vector2, data: Variant):
 			# Remove from source slot visual
 			if data.has("source_slot"):
 				data.source_slot.remove_item()
+
+			# Update visual in slot and emit signal
+			# Signal handler (CharacterPanel) will update player state
+			equip_item(item)
 
 			# Update inventory display
 			var inv = get_parent_inventory()
@@ -171,17 +161,20 @@ func get_slot_index() -> int:
 			return -1
 
 func get_parent_inventory():
-	# Get CharacterPanel first
-	var char_panel = get_parent().get_parent()
-	if char_panel and char_panel.has("inventory_ref"):
-		if char_panel.inventory_ref:
-			print("✅ Inventory found via CharacterPanel.inventory_ref")
-			return char_panel.inventory_ref
-		else:
-			print("❌ CharacterPanel.inventory_ref is null")
-	else:
-		print("❌ Could not find CharacterPanel or inventory_ref")
+	# Navigate up to CharacterPanel first
+	# EquipmentSlot → VBoxContainer → MarginContainer → CharacterPanel
+	var current = get_parent()
+	while current != null:
+		if current.has_method("set_player") and "inventory_ref" in current:
+			if current.inventory_ref:
+				print("✅ Inventory found via ", current.name, ".inventory_ref")
+				return current.inventory_ref
+			else:
+				print("❌ Found CharacterPanel but inventory_ref is null")
+				return null
+		current = current.get_parent()
 
+	print("❌ Could not find CharacterPanel with inventory_ref!")
 	return null
 
 func _get_drag_data(at_position: Vector2) -> Variant:
