@@ -63,32 +63,43 @@ func update_from_player():
 			slots[i].clear_slot()
 
 func _on_weapon_equipped(slot_type, item: Dictionary, slot_index: int):
-	if not player:
+	print("🔵 CharacterPanel._on_weapon_equipped() called")
+	print("   slot_index: ", slot_index)
+	print("   item: ", item.name if "name" in item else "UNKNOWN")
+	print("   player: ", player)
+
+	# Get player reference (fallback to scene tree if needed)
+	var player_ref = get_player_safe()
+	if not player_ref:
+		print("   ❌ ERROR: Could not get player in _on_weapon_equipped!")
 		return
 
 	# Equip weapon to player
 	if item.type == "weapon" and item.has("data"):
 		var weapon_data = item.data as WeaponData
-		player.equipped_weapons[slot_index] = weapon_data
+		player_ref.equipped_weapons[slot_index] = weapon_data
+		print("   ✅ Set player.equipped_weapons[", slot_index, "] = ", weapon_data.weapon_name)
 
 		# Auto-switch to this weapon
-		player.switch_weapon(slot_index)
-		print("Equipped ", weapon_data.weapon_name, " to slot ", slot_index + 1)
+		player_ref.switch_weapon(slot_index)
+		print("   ✅ Called player.switch_weapon(", slot_index, ")")
 
 		# Notify inventory to update (in case item came from inventory)
 		notify_inventory_update()
 
 func _on_weapon_unequipped(slot_type, slot_index: int):
-	if not player:
+	# Get player reference (fallback to scene tree if needed)
+	var player_ref = get_player_safe()
+	if not player_ref:
 		return
 
-	player.equipped_weapons[slot_index] = null
+	player_ref.equipped_weapons[slot_index] = null
 
 	# If this was the active weapon, clear it
-	if player.current_weapon_slot == slot_index:
-		player.current_weapon_data = null
-		player.ammo = 0
-		player.update_weapon_model()
+	if player_ref.current_weapon_slot == slot_index:
+		player_ref.current_weapon_data = null
+		player_ref.ammo = 0
+		player_ref.update_weapon_model()
 
 	print("Unequipped weapon from slot ", slot_index + 1)
 
@@ -103,3 +114,17 @@ func notify_inventory_update():
 	var inventory = get_node_or_null("../../..")
 	if inventory and inventory.has_method("update_inventory_display"):
 		inventory.update_inventory_display()
+
+func get_player_safe():
+	# Try to get player from stored reference
+	if player:
+		return player
+
+	# Fallback: Search for player in scene tree
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0:
+		print("   ⚠️ Using fallback: Found player via scene tree")
+		player = players[0]  # Cache it for next time
+		return player
+
+	return null
