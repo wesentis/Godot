@@ -218,14 +218,20 @@ func get_player():
 	while current != null:
 		if current.has_method("set_player") and "player" in current:
 			if current.player:
-				print("✅ Found player via ", current.name)
+				print("✅ Found player via ", current.name, ".player")
 				return current.player
 			else:
-				print("⚠️ Found CharacterPanel but player is null")
-				return null
+				print("⚠️ Found CharacterPanel but player is null - trying scene tree...")
+				break
 		current = current.get_parent()
 
-	print("❌ Could not find CharacterPanel with player!")
+	# Fallback: Search for player in scene tree
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0:
+		print("✅ Found player via scene tree (group 'player')")
+		return players[0]
+
+	print("❌ Could not find player anywhere!")
 	return null
 
 func receive_item(item: Dictionary):

@@ -38,8 +38,13 @@ func set_player(p):
 	update_from_player()
 
 func update_from_player():
+	print("🔵 CharacterPanel.update_from_player() called")
+	print("   player: ", player)
 	if not player:
+		print("   ❌ player is null, returning")
 		return
+
+	print("   player.equipped_weapons: ", player.equipped_weapons)
 
 	# Update weapon slots from player's equipped weapons
 	var slots = [weapon_slot_1, weapon_slot_2, weapon_slot_3]
@@ -51,8 +56,10 @@ func update_from_player():
 				"type": "weapon",
 				"data": weapon_data
 			}
+			print("   Updating slot ", i, " with ", weapon_data.weapon_name)
 			slots[i].equip_item(item)
 		else:
+			print("   Clearing slot ", i)
 			slots[i].clear_slot()
 
 func _on_weapon_equipped(slot_type, item: Dictionary, slot_index: int):
