@@ -88,8 +88,10 @@ func update_visual():
 		item_icon.color = Color(0.5, 0.5, 0.6, 1)
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
-	print("=== _can_drop_data CALLED ===")
-	print("Data type: ", typeof(data))
+	print("🎯 === EquipmentSlot._can_drop_data CALLED ===")
+	print("   Slot: ", slot_label.text)
+	print("   Position: ", at_position)
+	print("   Data type: ", typeof(data))
 
 	if typeof(data) == TYPE_DICTIONARY:
 		print("Data keys: ", data.keys())

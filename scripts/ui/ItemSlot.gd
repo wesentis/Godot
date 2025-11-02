@@ -61,11 +61,18 @@ func _on_context_menu_choice(id: int):
 
 # Drag & Drop functionality
 func _get_drag_data(at_position: Vector2) -> Variant:
+	print("🔍 _get_drag_data CALLED at position: ", at_position)
+	print("   item_data.is_empty(): ", item_data.is_empty())
+	if not item_data.is_empty():
+		print("   item_data keys: ", item_data.keys())
+		if "name" in item_data:
+			print("   item name: ", item_data.name)
+
 	if item_data.is_empty():
-		print("Cannot drag - item_data is empty")
+		print("❌ Cannot drag - item_data is empty")
 		return null
 
-	print("=== STARTING DRAG ===")
+	print("=== ✅ STARTING DRAG ===")
 	print("Item: ", item_data.name, " (index: ", item_index, ")")
 
 	# Create simple preview
